@@ -63,7 +63,20 @@ class RegularWinStrategy
     end
     false
   end
+end
 
+class MiddleWinStrategy
+
+  attr_reader :winner
+
+  def has_winner(board)
+    middle_val = board.get(board.row_count/2, board.col_count/2)
+    if(!middle_val.strip.empty?) then
+      @winner = middle_val
+      return true
+    end
+    return false
+  end
 end
 
 class TicTacToe
@@ -72,11 +85,6 @@ class TicTacToe
     @board = board
     @current_player = 'x'
     @win_strategy = win_strategy
-  end
-
-  def newGame
-    @board.reset
-    @current_player = 'x'
   end
 
   def play_turn(row, column)
@@ -95,6 +103,5 @@ class TicTacToe
   def toggle_player
     @current_player = (@current_player=='x') ? 'o' : 'x'
   end
-
 
 end
