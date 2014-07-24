@@ -1,4 +1,4 @@
-# refactored to have board class
+# add win strategy
 
 class Board
 
@@ -38,38 +38,20 @@ class Board
 
 end
 
+class RegularWinStrategy
 
-class TicTacToe
+  attr_reader :winner
 
-  def initialize(board)
-    @board = board
-    @current_player = 'x'
-    @winner = ''
+  def has_winner(board)
+    return rows_winner?(board) || cols_winner?(board)
   end
 
-  def play_turn(row, column)
-    @board.update(row, column, @current_player)
-    puts @board.to_s
-    check_winner
-    toggle_player
+  def rows_winner?(board)
+    all_equal_in_group?(board.rows)
   end
 
-  def toggle_player
-    @current_player = (@current_player=='x') ? 'o' : 'x'
-  end
-
-  def check_winner
-    if(rows_winner? or cols_winner?) then
-      puts @winner + ' wins!!'
-    end
-  end
-
-  def rows_winner?
-    all_equal_in_group?(@board.rows)
-  end
-
-  def cols_winner?
-    all_equal_in_group?(@board.cols)
+  def cols_winner?(board)
+    all_equal_in_group?(board.cols)
   end
 
   def all_equal_in_group?(groups)
@@ -81,4 +63,38 @@ class TicTacToe
     end
     false
   end
+
+end
+
+class TicTacToe
+
+  def initialize(board, win_strategy)
+    @board = board
+    @current_player = 'x'
+    @win_strategy = win_strategy
+  end
+
+  def newGame
+    @board.reset
+    @current_player = 'x'
+  end
+
+  def play_turn(row, column)
+    @board.update(row, column, @current_player)
+    puts @board.to_s
+    check_winner
+    toggle_player
+  end
+
+  def check_winner
+    if(@win_strategy.has_winner(@board)) then
+      puts @win_strategy.winner + ' wins!!'
+    end
+  end
+
+  def toggle_player
+    @current_player = (@current_player=='x') ? 'o' : 'x'
+  end
+
+
 end
